@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduRegister — Student Login</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+<div id="toast-area"></div>
+
+<div class="auth-page">
+
+  <!-- Left Panel -->
+  <div class="auth-panel-left">
+    <div>
+      <div class="auth-tag">
+        <span class="auth-tag-dot"></span>
+        Spring 2026 Registration Open
+      </div>
+      <div class="auth-hero-text">
+        <h1>Learn, Grow,<br><em>Excel</em></h1>
+        <p>Your gateway to academic excellence. Register for courses, track your progress and shape your future — all in one place.</p>
+        <ul class="auth-feats">
+          <li>Browse available courses across all departments</li>
+          <li>Instant online enrollment</li>
+          <li>Real-time seat availability</li>
+          <li>Manage your full academic schedule</li>
+        </ul>
+      </div>
+    </div>
+    <div class="auth-stats">
+      <div>
+        <span class="auth-stat-num">12+</span>
+        <span class="auth-stat-lbl">Courses</span>
+      </div>
+      <div>
+        <span class="auth-stat-num">6</span>
+        <span class="auth-stat-lbl">Departments</span>
+      </div>
+      <div>
+        <span class="auth-stat-num">100%</span>
+        <span class="auth-stat-lbl">Online</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="auth-panel-right">
+    <div class="auth-form-box">
+
+      <div class="auth-brand">
+        <div class="auth-brand-icon">E</div>
+        <div class="auth-brand-text">
+          EduRegister
+          <small>Student Portal</small>
+        </div>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+        <button class="auth-tab" id="tab-reg" onclick="switchTab('reg')">Create Account</button>
+      </div>
+
+      <div id="auth-alert" class="alert alert-error hidden"></div>
+
+      <!-- LOGIN -->
+      <div id="sec-login" class="auth-section">
+        <h2>Welcome back</h2>
+        <p>Sign in to access your courses and enrollments.</p>
+
+        <form id="login-form" novalidate>
+          <div style="display:flex;flex-direction:column;gap:1.1rem;">
+
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <div class="input-wrap">
+                <span class="input-icon">@</span>
+                <input type="email" id="login-email" class="form-control" placeholder="you@university.edu">
+              </div>
+              <span class="form-error hidden" id="login-email-err"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon">#</span>
+                <input type="password" id="login-pwd" class="form-control" placeholder="Your password">
+                <button type="button" class="input-eye" id="login-eye">Show</button>
+              </div>
+              <span class="form-error hidden" id="login-pwd-err"></span>
+            </div>
+
+            <div class="alert alert-info">
+              <strong>Demo account:</strong> demo@student.edu &nbsp;/&nbsp; password123
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full btn-lg" id="login-btn">
+              Sign In
+            </button>
+          </div>
+        </form>
+
+        <p class="auth-footer-txt">
+          No account? <a href="#" onclick="switchTab('reg')">Create one free</a>
+        </p>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="sec-reg" class="auth-section hidden">
+        <h2>Create Account</h2>
+        <p>Join thousands of students. Takes under a minute.</p>
+
+        <form id="reg-form" novalidate>
+          <div style="display:flex;flex-direction:column;gap:1rem;">
+
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <div class="input-wrap">
+                <span class="input-icon">A</span>
+                <input type="text" id="reg-name" class="form-control" placeholder="John Smith">
+              </div>
+              <span class="form-error hidden" id="reg-name-err"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email Address *</label>
+              <div class="input-wrap">
+                <span class="input-icon">@</span>
+                <input type="email" id="reg-email" class="form-control" placeholder="you@university.edu">
+              </div>
+              <span class="form-error hidden" id="reg-email-err"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Password *</label>
+              <div class="input-wrap">
+                <span class="input-icon">#</span>
+                <input type="password" id="reg-pwd" class="form-control" placeholder="Min. 6 characters"
+                       oninput="updatePwdBars(this.value)">
+                <button type="button" class="input-eye" id="reg-eye">Show</button>
+              </div>
+              <div style="margin-top:.4rem;">
+                <div class="pwd-bars">
+                  <div class="pwd-bar" id="pwd-bar-1"></div>
+                  <div class="pwd-bar" id="pwd-bar-2"></div>
+                  <div class="pwd-bar" id="pwd-bar-3"></div>
+                  <div class="pwd-bar" id="pwd-bar-4"></div>
+                </div>
+                <div class="pwd-label" id="pwd-strength-lbl"></div>
+              </div>
+              <span class="form-error hidden" id="reg-pwd-err"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Confirm Password *</label>
+              <div class="input-wrap">
+                <span class="input-icon">#</span>
+                <input type="password" id="reg-confirm" class="form-control" placeholder="Repeat your password">
+              </div>
+              <span class="form-error hidden" id="reg-confirm-err"></span>
+            </div>
+
+            <div class="form-2col">
+              <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input type="tel" id="reg-phone" class="form-control" placeholder="+91 9876543210">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Year</label>
+                <select id="reg-year" class="form-control">
+                  <option value="">Select</option>
+                  <option value="1">1st Year</option>
+                  <option value="2">2nd Year</option>
+                  <option value="3">3rd Year</option>
+                  <option value="4">4th Year</option>
+                  <option value="5">5th Year</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Department</label>
+              <select id="reg-dept" class="form-control">
+                <option value="">Select Department</option>
+                <option>Computer Science</option>
+                <option>Mathematics</option>
+                <option>Physics</option>
+                <option>Business</option>
+                <option>English</option>
+                <option>Psychology</option>
+                <option>Engineering</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full btn-lg" id="reg-btn">
+              Create My Account
+            </button>
+          </div>
+        </form>
+
+        <p class="auth-footer-txt">
+          Already have an account? <a href="#" onclick="switchTab('login')">Sign in</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

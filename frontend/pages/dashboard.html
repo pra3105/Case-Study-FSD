@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — EduRegister</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+<div id="toast-area"></div>
+
+<!-- Course Detail Modal -->
+<div class="modal-bg hidden" id="course-modal">
+  <div class="modal-box" style="max-width:560px;">
+    <div class="modal-head">
+      <h3 id="modal-title">Course Details</h3>
+      <button class="modal-close" onclick="closeCourseModal()">&#10005;</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <div class="page-loader"><div class="spinner"></div></div>
+    </div>
+    <div class="modal-foot" id="modal-foot"></div>
+  </div>
+</div>
+
+<!-- Profile Edit Modal -->
+<div class="modal-bg hidden" id="profile-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Edit Profile</h3>
+      <button class="modal-close" onclick="closeProfileModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="pf-name" class="form-control">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" id="pf-phone" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year</label>
+            <select id="pf-year" class="form-control">
+              <option value="">Select</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+              <option value="5">5th Year</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department</label>
+          <select id="pf-dept" class="form-control">
+            <option value="">Select</option>
+            <option>Computer Science</option>
+            <option>Mathematics</option>
+            <option>Physics</option>
+            <option>Business</option>
+            <option>English</option>
+            <option>Psychology</option>
+            <option>Engineering</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeProfileModal()">Cancel</button>
+      <button class="btn btn-primary" id="save-profile-btn" onclick="saveProfile()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <!-- Sidebar Overlay -->
+  <div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <a href="#" class="sb-brand" onclick="showPage('dashboard')">
+        <div class="sb-brand-icon">E</div>
+        <div class="sb-brand-name">
+          EduRegister
+          <small>Student Portal</small>
+        </div>
+      </a>
+    </div>
+
+    <div class="sb-profile">
+      <div class="sb-avatar" id="sb-avatar">S</div>
+      <div>
+        <div class="sb-name" id="sb-name">Loading...</div>
+        <div class="sb-id"   id="sb-id">—</div>
+      </div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-section-lbl">Menu</div>
+      <button class="sb-item active" id="nav-dashboard"   onclick="showPage('dashboard')">
+        <span class="sb-item-ico">&#8962;</span> Dashboard
+      </button>
+      <button class="sb-item" id="nav-courses"     onclick="showPage('courses')">
+        <span class="sb-item-ico">&#128218;</span> Browse Courses
+      </button>
+      <button class="sb-item" id="nav-enrollments" onclick="showPage('enrollments')">
+        <span class="sb-item-ico">&#128203;</span> My Enrollments
+        <span class="sb-badge" id="sb-enroll-badge">0</span>
+      </button>
+      <button class="sb-item" id="nav-profile"     onclick="showPage('profile')">
+        <span class="sb-item-ico">&#128100;</span> My Profile
+      </button>
+    </nav>
+
+    <div class="sb-foot">
+      <button class="sb-logout" onclick="logout()">
+        <span>&#128682;</span> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="tb-burger" onclick="toggleSidebar()">&#9776;</button>
+        <h1 class="tb-title" id="tb-title">Dashboard</h1>
+      </div>
+      <div class="tb-right">
+        <span class="tb-time" id="tb-time"></span>
+        <div class="tb-avatar" id="tb-avatar" onclick="showPage('profile')" title="Profile">S</div>
+      </div>
+    </header>
+
+    <!-- ===== PAGE: DASHBOARD ===== -->
+    <main class="pg-content" id="pg-dashboard">
+      <div class="pg-head">
+        <h2 id="dash-greeting">Good morning, Student.</h2>
+        <p>Here is your academic overview for Spring 2025.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-ico green">&#128218;</div>
+          <div>
+            <div class="stat-val" id="stat-active">—</div>
+            <div class="stat-lbl">Active Courses</div>
+            <div class="stat-sub">This semester</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico amber">&#9889;</div>
+          <div>
+            <div class="stat-val" id="stat-credits">—</div>
+            <div class="stat-lbl">Credit Hours</div>
+            <div class="stat-sub">Currently enrolled</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico teal">&#10003;</div>
+          <div>
+            <div class="stat-val" id="stat-completed">—</div>
+            <div class="stat-lbl">Completed</div>
+            <div class="stat-sub">Past courses</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico red">&#9675;</div>
+          <div>
+            <div class="stat-val" id="stat-avail">—</div>
+            <div class="stat-lbl">Available Courses</div>
+            <div class="stat-sub">Ready to enroll</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div class="card">
+          <div class="card-head">
+            <h3>Recent Enrollments</h3>
+            <button class="btn btn-outline btn-sm" onclick="showPage('enrollments')">View All</button>
+          </div>
+          <div class="card-body" id="recent-list">
+            <div class="page-loader"><div class="spinner"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h3>Trending Courses</h3>
+            <button class="btn btn-outline btn-sm" onclick="showPage('courses')">Browse</button>
+          </div>
+          <div class="card-body" id="trending-list">
+            <div class="page-loader"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===== PAGE: COURSES ===== -->
+    <main class="pg-content hidden" id="pg-courses">
+      <div class="pg-head">
+        <h2>Browse Courses</h2>
+        <p>Explore all available courses for Spring 2025. Click any card to view details and enroll.</p>
+      </div>
+
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <span class="search-ico">&#128269;</span>
+          <input type="text" class="search-input" id="course-search"
+                 placeholder="Search by title, code, instructor..." oninput="onSearch()">
+        </div>
+        <select class="sel" id="filter-dept" onchange="loadCourses()">
+          <option value="">All Departments</option>
+        </select>
+        <select class="sel" id="filter-diff" onchange="loadCourses()">
+          <option value="">All Levels</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+        <select class="sel" id="filter-sem" onchange="loadCourses()">
+          <option value="">All Semesters</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="clearFilters()">Clear</button>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
+        <span id="courses-count" style="font-size:.85rem;color:var(--gray-500);">Loading...</span>
+        <select class="sel" id="sort-sel" onchange="loadCourses()" style="min-width:130px;">
+          <option value="newest">Newest First</option>
+          <option value="az">A to Z</option>
+          <option value="credits-lo">Credits Low</option>
+          <option value="credits-hi">Credits High</option>
+          <option value="seats">Seats Available</option>
+        </select>
+      </div>
+
+      <div class="courses-grid stagger" id="courses-grid">
+        <div class="page-loader" style="grid-column:1/-1;">
+          <div class="spinner"></div><span>Loading courses...</span>
+        </div>
+      </div>
+
+      <div class="pagination" id="courses-pages" style="margin-top:1.8rem;"></div>
+    </main>
+
+    <!-- ===== PAGE: ENROLLMENTS ===== -->
+    <main class="pg-content hidden" id="pg-enrollments">
+      <div class="pg-head">
+        <h2>My Enrollments</h2>
+        <p>All courses you are enrolled in for Spring 2025.</p>
+        <div class="pg-actions">
+          <button class="btn btn-primary btn-sm" onclick="showPage('courses')">+ Browse More Courses</button>
+        </div>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:1.5rem;">
+        <div class="stat-card">
+          <div class="stat-ico green">&#128218;</div>
+          <div><div class="stat-val" id="es-active">—</div><div class="stat-lbl">Active</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico amber">&#9889;</div>
+          <div><div class="stat-val" id="es-credits">—</div><div class="stat-lbl">Credits Enrolled</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico teal">&#10003;</div>
+          <div><div class="stat-val" id="es-completed">—</div><div class="stat-lbl">Completed</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico red">&#10007;</div>
+          <div><div class="stat-val" id="es-dropped">—</div><div class="stat-lbl">Dropped</div></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1rem;display:flex;gap:.75rem;align-items:center;">
+        <label style="font-size:.85rem;font-weight:700;color:var(--gray-600);">Filter:</label>
+        <select class="sel" id="enroll-filter" onchange="loadEnrollments()">
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="completed">Completed</option>
+          <option value="dropped">Dropped</option>
+        </select>
+      </div>
+
+      <div class="tbl-wrap">
+        <table class="data-tbl">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Course</th>
+              <th>Department</th>
+              <th>Credits</th>
+              <th>Schedule</th>
+              <th>Enrolled On</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="enroll-tbody">
+            <tr>
+              <td colspan="8">
+                <div class="page-loader"><div class="spinner"></div><span>Loading...</span></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- ===== PAGE: PROFILE ===== -->
+    <main class="pg-content hidden" id="pg-profile">
+      <div class="pg-head">
+        <h2>My Profile</h2>
+        <p>View and manage your personal information.</p>
+      </div>
+
+      <div class="profile-hero">
+        <div class="ph-avatar" id="ph-avatar">S</div>
+        <div class="ph-info">
+          <div class="ph-name" id="ph-name">Loading...</div>
+          <div class="ph-id"   id="ph-id">—</div>
+          <div class="ph-tags" id="ph-tags"></div>
+        </div>
+        <button class="ph-edit-btn" onclick="openProfileModal()">Edit Profile</button>
+      </div>
+
+      <div class="detail-grid">
+        <div class="card">
+          <div class="card-head"><h3>Personal Information</h3></div>
+          <div class="card-body" id="personal-info">
+            <div class="page-loader"><div class="spinner"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Academic Details</h3></div>
+          <div class="card-body" id="academic-info">
+            <div class="page-loader"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+          <div class="card-head"><h3>Change Password</h3></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:1rem;align-items:end;">
+              <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <input type="password" id="pwd-cur" class="form-control" placeholder="Current password">
+              </div>
+              <div class="form-group">
+                <label class="form-label">New Password</label>
+                <input type="password" id="pwd-new" class="form-control" placeholder="Min. 6 characters">
+              </div>
+              <button class="btn btn-teal" onclick="changePassword()">Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/dashboard.js"></script>
+<script src="../js/courses.js"></script>
+<script src="../js/enrollments.js"></script>
+</body>
+</html>
